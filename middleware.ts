@@ -1,15 +1,18 @@
-import { getToken } from "next-auth/jwt";
+import NextAuth from "next-auth";
 import { NextResponse, type NextRequest } from "next/server";
+import { authConfig } from "@/lib/auth.config";
+
+const { auth } = NextAuth(authConfig);
 
 const PROTECTED = ["/dashboard", "/profile", "/my-courses", "/sessions"];
 const MENTOR_ONLY = ["/mentor"];
 const ADMIN_ONLY = ["/admin"];
 
-export default async function middleware(req: NextRequest) {
+export default auth(async function middleware(req) {
+  const token = req.auth;
   const { nextUrl } = req;
-  const token = await getToken({ req, secret: process.env.AUTH_SECRET });
-  const isLoggedIn = !!token?.sub || !!(token as { id?: string } | null)?.id;
-  const role = (token as { role?: string } | null)?.role;
+  const isLoggedIn = !!token?.user;
+  const role = token?.user?.role;
   const path = nextUrl.pathname;
 
   const isAdminRoute = ADMIN_ONLY.some((p) => path.startsWith(p));
@@ -46,8 +49,9 @@ export default async function middleware(req: NextRequest) {
   }
 
   return NextResponse.next();
-}
+});
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)" ],
 };
+
