@@ -1,8 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
-import { User, LogOut, Settings } from "lucide-react";
+import { LogOut, Menu, Settings, User } from "lucide-react";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -11,7 +13,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DashboardNav } from "@/components/layout/dashboard-sidebar";
+import { APP_NAME } from "@/lib/constants";
 import { getInitials } from "@/lib/utils";
 import type { Session } from "next-auth";
 
@@ -22,9 +27,46 @@ const formatRole = (role: string) =>
 
 export function DashboardHeader({ user }: Props) {
   const roleLabel = user.role ? formatRole(user.role) : null;
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="flex h-16 items-center justify-end border-b bg-background px-6">
+    <header className="flex h-16 items-center justify-between border-b bg-background px-6">
+      <div className="flex items-center gap-3 md:hidden">
+        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+          <SheetTrigger asChild>
+            <button
+              type="button"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background hover:bg-accent"
+              aria-label="Open dashboard menu"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-72 p-0">
+            <div className="flex h-16 items-center border-b px-4">
+              <Link href="/" className="flex items-center gap-2 font-bold">
+                <div className="h-7 w-7 rounded-lg bg-white/90 flex items-center justify-center ring-1 ring-black/5">
+                  <Image
+                    src="/pas-logo.jpeg"
+                    alt="PAS Academy logo"
+                    width={28}
+                    height={28}
+                    className="h-6 w-6 object-contain"
+                  />
+                </div>
+                <span className="text-sm">{APP_NAME}</span>
+              </Link>
+            </div>
+            <DashboardNav
+              role={user.role}
+              className="px-2 py-4"
+              onNavigate={() => setMobileOpen(false)}
+            />
+          </SheetContent>
+        </Sheet>
+        <span className="text-sm font-semibold text-foreground">Dashboard</span>
+      </div>
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button className="flex items-center gap-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">

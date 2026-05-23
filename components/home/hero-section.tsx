@@ -21,10 +21,10 @@ export function HeroSection() {
           src={HERO_BG}
           alt=""
           aria-hidden="true"
-          className="h-full w-full object-cover opacity-80 brightness-95 saturate-105"
+          className="h-full w-full object-cover opacity-92 brightness-95 saturate-110"
         />
-        <div className="absolute inset-0 bg-brand-gradient opacity-60" />
-        <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/35 via-transparent to-emerald-950/55" />
+        <div className="absolute inset-0 bg-brand-gradient opacity-70" />
+        <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/45 via-emerald-950/20 to-emerald-950/60" />
         <div className="absolute -top-32 -right-32 h-[28rem] w-[28rem] rounded-full bg-primary/15 blur-3xl" />
         <div className="absolute -bottom-24 -left-24 h-[24rem] w-[24rem] rounded-full bg-emerald-300/15 blur-3xl" />
       </div>
@@ -32,7 +32,7 @@ export function HeroSection() {
       <div className="container mx-auto px-4 py-24 sm:py-32 lg:py-40 relative z-10">
         <div className="mx-auto max-w-3xl text-center space-y-10">
           <div className="space-y-6 text-white">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 backdrop-blur px-4 py-1.5 text-sm font-medium text-white">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 backdrop-blur px-4 py-1.5 text-sm font-semibold text-white/95 drop-shadow">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-300" />
@@ -40,13 +40,13 @@ export function HeroSection() {
               Open enrollment for 2025 — join 2,000+ students
             </div>
 
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] text-white">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] text-white drop-shadow-2xl">
               <span className="text-white">Learn.</span>{" "}
               <span className="text-white">Create.</span>{" "}
               <span className="text-emerald-100">Connect.</span>
             </h1>
 
-            <p className="text-lg sm:text-xl text-emerald-100/90 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl text-emerald-50/95 max-w-2xl mx-auto leading-relaxed drop-shadow-lg">
               PAS Academy connects students with expert mentors, high-quality tutorials,
               and career guidance to help you reach your full potential.
             </p>
