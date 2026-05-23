@@ -21,7 +21,7 @@ export default function AuthLayout({
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-brand-gradient opacity-85 mix-blend-multiply" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-black/20" />
 
         <Link
           href="/"
@@ -59,7 +59,7 @@ export default function AuthLayout({
 
       {/* Right — form */}
       <div className="w-full lg:p-8 py-12">
-        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[400px]">
+        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-100">
           <Link
             href="/"
             className="flex items-center justify-center gap-2.5 font-bold text-lg lg:hidden"

@@ -63,7 +63,7 @@ export function Header() {
               priority
             />
           </div>
-          <span className="hidden sm:inline text-brand-gradient">{APP_NAME}</span>
+          <span className="text-brand-gradient text-base sm:text-xl">{APP_NAME}</span>
         </Link>
 
         {/* Desktop Nav */}
