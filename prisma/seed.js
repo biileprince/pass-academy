@@ -20,8 +20,8 @@ function loadEnvFile(filePath) {
   });
 }
 
-loadEnvFile(path.join(__dirname, "..", ".env"));
-loadEnvFile(path.join(__dirname, "..", ".env.local"));
+loadEnvFile(path.join(process.cwd(), ".env"));
+loadEnvFile(path.join(process.cwd(), ".env.local"));
 
 const prisma = new PrismaClient();
 
