@@ -1,14 +1,15 @@
-import { auth } from "@/lib/auth";
-import { NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
+import { NextResponse, type NextRequest } from "next/server";
 
 const PROTECTED = ["/dashboard", "/profile", "/my-courses", "/sessions"];
 const MENTOR_ONLY = ["/mentor"];
 const ADMIN_ONLY = ["/admin"];
 
-export default auth((req) => {
+export default async function middleware(req: NextRequest) {
   const { nextUrl } = req;
-  const session = req.auth;
-  const isLoggedIn = !!session?.user;
+  const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+  const isLoggedIn = !!token?.sub || !!(token as { id?: string } | null)?.id;
+  const role = (token as { role?: string } | null)?.role;
   const path = nextUrl.pathname;
 
   const isAdminRoute = ADMIN_ONLY.some((p) => path.startsWith(p));
@@ -18,7 +19,7 @@ export default auth((req) => {
         new URL(`/login?callbackUrl=${encodeURIComponent(path)}`, req.url)
       );
     }
-    if (session?.user.role !== "ADMIN") {
+    if (role !== "ADMIN") {
       return NextResponse.redirect(new URL("/dashboard", req.url));
     }
     return NextResponse.next();
@@ -31,7 +32,7 @@ export default auth((req) => {
         new URL(`/login?callbackUrl=${encodeURIComponent(path)}`, req.url)
       );
     }
-    if (!["MENTOR", "ADMIN"].includes(session?.user.role ?? "")) {
+    if (!["MENTOR", "ADMIN"].includes(role ?? "")) {
       return NextResponse.redirect(new URL("/dashboard", req.url));
     }
     return NextResponse.next();
@@ -45,7 +46,7 @@ export default auth((req) => {
   }
 
   return NextResponse.next();
-});
+}
 
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)"],
