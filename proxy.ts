@@ -7,10 +7,17 @@ const ADMIN_ONLY = ["/admin"];
 
 export async function proxy(req: NextRequest) {
   const { nextUrl } = req;
-  const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+  const path = nextUrl.pathname;
+
+  let token: Awaited<ReturnType<typeof getToken>> = null;
+  try {
+    token = await getToken({ req, secret: process.env.AUTH_SECRET });
+  } catch {
+    // If token decoding fails (e.g. missing secret), treat as unauthenticated
+  }
+
   const isLoggedIn = !!token?.sub || !!(token as { id?: string } | null)?.id;
   const role = (token as { role?: string } | null)?.role;
-  const path = nextUrl.pathname;
 
   const isAdminRoute = ADMIN_ONLY.some((p) => path.startsWith(p));
   if (isAdminRoute) {
