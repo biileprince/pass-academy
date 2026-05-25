@@ -9,9 +9,16 @@ export async function proxy(req: NextRequest) {
   const { nextUrl } = req;
   const path = nextUrl.pathname;
 
+  // next-auth v5 renamed the cookie from "next-auth.session-token"
+  // to "authjs.session-token" (prefixed with __Secure- on HTTPS).
+  const secureCookie = req.url.startsWith("https://");
+  const cookieName = secureCookie
+    ? "__Secure-authjs.session-token"
+    : "authjs.session-token";
+
   let token: Awaited<ReturnType<typeof getToken>> = null;
   try {
-    token = await getToken({ req, secret: process.env.AUTH_SECRET });
+    token = await getToken({ req, secret: process.env.AUTH_SECRET, cookieName });
   } catch {
     // If token decoding fails (e.g. missing secret), treat as unauthenticated
   }
