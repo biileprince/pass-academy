@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 import { webinarSchema } from "@/lib/validations/webinar";
 import { slugify } from "@/lib/utils";
 import type { ActionResult, WebinarFilter } from "@/types";
-import type { Webinar } from "@prisma/client";
+import type { Webinar } from "@/prisma/generated/prisma/client";
 
 export async function getWebinars(
   filter: WebinarFilter = "upcoming"

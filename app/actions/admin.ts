@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import type { ActionResult } from "@/types";
-import type { Role } from "@prisma/client";
+import type { Role } from "@/prisma/generated/prisma/client";
 
 async function requireAdmin() {
   const session = await auth();

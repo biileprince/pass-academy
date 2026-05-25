@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { COURSE_CATEGORIES } from "@/lib/constants";
 import { formatDuration } from "@/lib/utils";
-import type { Course } from "@prisma/client";
+import type { Course } from "@/prisma/generated/prisma/client";
 
 type Props = {
   course: Course & { _count?: { enrollments: number; lessons: number } };

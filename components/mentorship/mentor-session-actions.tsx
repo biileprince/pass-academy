@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { updateSessionStatus, cancelSession } from "@/app/actions/mentorship";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import type { SessionStatus } from "@prisma/client";
+import type { SessionStatus } from "@/prisma/generated/prisma/client";
 
 type Props = { sessionId: string; status: SessionStatus };
 

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CourseCategory } from "@prisma/client";
+import { CourseCategory } from "@/prisma/generated/prisma/enums";
 
 export const mentorProfileSchema = z.object({
   headline: z.string().min(5, "Headline must be at least 5 characters").max(120),

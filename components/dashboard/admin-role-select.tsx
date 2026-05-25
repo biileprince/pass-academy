@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { updateUserRole } from "@/app/actions/admin";
-import type { Role } from "@prisma/client";
+import type { Role } from "@/prisma/generated/prisma/client";
 
 type Props = { userId: string; currentRole: Role };
 

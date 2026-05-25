@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { COURSE_CATEGORIES } from "@/lib/constants";
 import { getInitials } from "@/lib/utils";
-import type { User, MentorProfile, Profile } from "@prisma/client";
+import type { User, MentorProfile, Profile } from "@/prisma/generated/prisma/client";
 
 type MentorWithProfile = User & {
   mentorProfile: MentorProfile;

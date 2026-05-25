@@ -4,7 +4,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatDateTime, formatDuration } from "@/lib/utils";
-import type { Webinar } from "@prisma/client";
+import type { Webinar } from "@/prisma/generated/prisma/client";
 
 const STATUS_STYLES: Record<string, string> = {
   SCHEDULED: "bg-blue-100 text-blue-700",

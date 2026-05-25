@@ -5,7 +5,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { bookSessionSchema, mentorProfileSchema } from "@/lib/validations/mentorship";
 import type { ActionResult, MentorFilters } from "@/types";
-import type { User, MentorProfile, Profile, MentorSession, Prisma } from "@prisma/client";
+import type { User, MentorProfile, Profile, MentorSession, Prisma } from "@/prisma/generated/prisma/client";
 
 type MentorWithProfile = User & { mentorProfile: MentorProfile; profile: Profile | null };
 

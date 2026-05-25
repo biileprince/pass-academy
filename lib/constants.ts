@@ -1,4 +1,4 @@
-import { CourseCategory } from "@prisma/client";
+import { CourseCategory } from "@/prisma/generated/prisma/enums";
 
 export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "PAS Academy";
 export const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";

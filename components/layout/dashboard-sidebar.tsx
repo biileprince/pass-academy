@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { APP_NAME, DASHBOARD_NAV } from "@/lib/constants";
-import type { Role } from "@prisma/client";
+import type { Role } from "@/prisma/generated/prisma/client";
 
 const ICON_MAP: Record<string, React.ElementType> = {
   LayoutDashboard,

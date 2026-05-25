@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 import { courseSchema, lessonSchema } from "@/lib/validations/course";
 import { slugify } from "@/lib/utils";
 import type { ActionResult, CourseFilters } from "@/types";
-import type { Course, Lesson } from "@prisma/client";
+import type { Course, Lesson } from "@/prisma/generated/prisma/client";
 
 export async function getCourses(filters: CourseFilters = {}): Promise<
   ActionResult<(Course & { _count: { enrollments: number; lessons: number } })[]>

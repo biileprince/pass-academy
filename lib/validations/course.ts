@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CourseCategory, CourseLevel } from "@prisma/client";
+import { CourseCategory, CourseLevel } from "@/prisma/generated/prisma/enums";
 
 export const courseSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters").max(100),

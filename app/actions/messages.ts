@@ -5,7 +5,7 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import type { ActionResult } from "@/types";
-import type { Message } from "@prisma/client";
+import type { Message } from "@/prisma/generated/prisma/client";
 
 const sendSchema = z.object({
   receiverId: z.string().min(1),
