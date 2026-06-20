@@ -13,13 +13,15 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { loginSchema, type LoginInput } from "@/lib/validations/auth";
+import { getDashboardUrl } from "@/lib/redirect-utils";
+import { getUserRole } from "@/app/actions/auth";
 
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
-  const callbackUrl = searchParams.get("callbackUrl") ?? "/dashboard";
+  const callbackUrl = searchParams.get("callbackUrl");
 
   const {
     register,
@@ -39,7 +41,14 @@ export function LoginForm() {
       return;
     }
 
-    router.push(callbackUrl);
+    // Get user role and redirect accordingly
+    if (callbackUrl && !callbackUrl.includes("/login")) {
+      router.push(callbackUrl);
+    } else {
+      const userRole = await getUserRole(data.email);
+      const redirectUrl = getDashboardUrl(userRole);
+      router.push(redirectUrl);
+    }
     router.refresh();
   }
 

@@ -80,3 +80,55 @@ export async function getPendingMentors() {
     include: { mentorProfile: true, profile: true },
   });
 }
+
+export async function approveTutor(tutorUserId: string): Promise<ActionResult<void>> {
+  try {
+    await requireAdmin();
+    await db.tutorProfile.update({
+      where: { userId: tutorUserId },
+      data: { isApproved: true },
+    });
+    revalidatePath("/dashboard/admin");
+    revalidatePath("/tutorials");
+    return { success: true, data: undefined };
+  } catch {
+    return { success: false, error: "Failed to approve tutor" };
+  }
+}
+
+export async function rejectTutor(tutorUserId: string): Promise<ActionResult<void>> {
+  try {
+    await requireAdmin();
+    await db.tutorProfile.update({
+      where: { userId: tutorUserId },
+      data: { isApproved: false },
+    });
+    await db.user.update({ where: { id: tutorUserId }, data: { role: "STUDENT" } });
+    revalidatePath("/dashboard/admin");
+    return { success: true, data: undefined };
+  } catch {
+    return { success: false, error: "Failed to reject tutor" };
+  }
+}
+
+export async function getPendingTutors() {
+  await requireAdmin();
+  return db.user.findMany({
+    where: { role: "TUTOR", tutorProfile: { isApproved: false } },
+    include: { tutorProfile: true, profile: true },
+  });
+}
+
+export async function deactivateUser(userId: string): Promise<ActionResult<void>> {
+  try {
+    const session = await requireAdmin();
+    if (userId === session.user.id) {
+      return { success: false, error: "Cannot deactivate yourself" };
+    }
+    await db.user.delete({ where: { id: userId } });
+    revalidatePath("/dashboard/admin");
+    return { success: true, data: undefined };
+  } catch {
+    return { success: false, error: "Failed to deactivate user" };
+  }
+}

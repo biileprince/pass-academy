@@ -152,7 +152,10 @@ export async function updateLessonProgress(
 
 export async function createCourse(input: unknown): Promise<ActionResult<{ slug: string }>> {
   const session = await auth();
-  if (session?.user.role !== "ADMIN") return { success: false, error: "Forbidden" };
+  if (!session?.user) return { success: false, error: "Not authenticated" };
+  if (session.user.role !== "ADMIN" && session.user.role !== "TUTOR") {
+    return { success: false, error: "Only admins and tutors can create courses" };
+  }
 
   const parsed = courseSchema.safeParse(input);
   if (!parsed.success) return { success: false, error: parsed.error.errors[0]?.message ?? "Invalid input" };
@@ -160,10 +163,16 @@ export async function createCourse(input: unknown): Promise<ActionResult<{ slug:
   try {
     const slug = slugify(parsed.data.title);
     const course = await db.course.create({
-      data: { ...parsed.data, slug, authorId: session.user.id },
+      data: { 
+        ...parsed.data, 
+        slug, 
+        authorId: session.user.id,
+        tutorId: session.user.id,
+      },
     });
     revalidatePath("/admin/courses");
     revalidatePath("/tutorials");
+    revalidatePath("/tutor/courses");
     return { success: true, data: { slug: course.slug } };
   } catch {
     return { success: false, error: "Failed to create course" };

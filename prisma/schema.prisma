@@ -4,13 +4,14 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
 }
 
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
 enum Role {
   STUDENT
+  TUTOR
   MENTOR
   ADMIN
 }
@@ -73,12 +74,14 @@ model User {
   sessions             Session[]
   profile              Profile?
   mentorProfile        MentorProfile?
+  tutorProfile         TutorProfile?
+  taughtCourses        Course[]         @relation("TutorCourses")
   enrollments          Enrollment[]
-  bookedSessions       MentorSession[]      @relation("StudentSessions")
-  mentorSessions       MentorSession[]      @relation("MentorSessions")
+  bookedSessions       MentorSession[]  @relation("StudentSessions")
+  mentorSessions       MentorSession[]  @relation("MentorSessions")
   webinarRegistrations WebinarRegistration[]
-  sentMessages         Message[]            @relation("SentMessages")
-  receivedMessages     Message[]            @relation("ReceivedMessages")
+  sentMessages         Message[]        @relation("SentMessages")
+  receivedMessages     Message[]        @relation("ReceivedMessages")
   lessonProgress       LessonProgress[]
   careerProfile        CareerProfile?
 
@@ -183,6 +186,30 @@ model MentorProfile {
   @@map("mentor_profiles")
 }
 
+model TutorProfile {
+  id              String         @id @default(cuid())
+  userId          String         @unique
+  headline        String
+  bio             String?        @db.Text
+  expertise       String[]
+  subjects        CourseCategory[]
+  yearsExperience Int            @default(0)
+  qualifications  String[]
+  isApproved      Boolean        @default(false)
+  isActive        Boolean        @default(true)
+  languages       String[]       @default(["English"])
+  rating          Float?
+  reviewCount     Int            @default(0)
+  studentsCount   Int            @default(0)
+  coursesCount    Int            @default(0)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("tutor_profiles")
+}
+
 // ─── Mentorship ───────────────────────────────────────────────────────────────
 
 model MentorSession {
@@ -231,15 +258,18 @@ model Course {
   price        Decimal?       @db.Decimal(10, 2)
   currency     String         @default("USD")
   authorId     String
+  tutorId      String
   totalDuration Int           @default(0)
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
 
+  tutor       User         @relation("TutorCourses", fields: [tutorId], references: [id])
   lessons     Lesson[]
   enrollments Enrollment[]
 
   @@index([category])
   @@index([slug])
+  @@index([tutorId])
   @@map("courses")
 }
 

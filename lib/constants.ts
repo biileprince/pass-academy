@@ -20,6 +20,13 @@ export const DASHBOARD_NAV = {
     { label: "My Sessions", href: "/sessions", icon: "Calendar" },
     { label: "Profile", href: "/profile", icon: "User" },
   ],
+  TUTOR: [
+    { label: "Dashboard", href: "/dashboard", icon: "LayoutDashboard" },
+    { label: "My Courses", href: "/tutor/courses", icon: "BookOpen" },
+    { label: "Create Course", href: "/tutor/courses/create", icon: "BookOpen" },
+    { label: "Students", href: "/tutor/students", icon: "Users" },
+    { label: "Profile", href: "/profile", icon: "User" },
+  ],
   MENTOR: [
     { label: "Dashboard", href: "/dashboard", icon: "LayoutDashboard" },
     { label: "My Courses", href: "/my-courses", icon: "BookOpen" },
@@ -28,11 +35,12 @@ export const DASHBOARD_NAV = {
     { label: "Profile", href: "/profile", icon: "User" },
   ],
   ADMIN: [
-    { label: "Dashboard", href: "/admin/dashboard", icon: "LayoutDashboard" },
-    { label: "Users", href: "/admin/users", icon: "Users" },
-    { label: "Courses", href: "/admin/courses", icon: "BookOpen" },
-    { label: "Webinars", href: "/admin/webinars", icon: "Video" },
-    { label: "Mentors", href: "/admin/mentors", icon: "UserCheck" },
+    { label: "Dashboard", href: "/dashboard/admin", icon: "LayoutDashboard" },
+    { label: "Users", href: "/dashboard/admin/users", icon: "Users" },
+    { label: "Courses", href: "/dashboard/admin/courses", icon: "BookOpen" },
+    { label: "Webinars", href: "/dashboard/admin/webinars", icon: "Video" },
+    { label: "Mentors", href: "/dashboard/admin/mentors", icon: "UserCheck" },
+    { label: "Tutors", href: "/dashboard/admin/tutors", icon: "UserCheck" },
   ],
 } as const;
 

@@ -50,3 +50,11 @@ export async function registerUser(
 
   return { success: true, data: { id: user.id } };
 }
+
+export async function getUserRole(email: string) {
+  const user = await db.user.findUnique({
+    where: { email },
+    select: { role: true },
+  });
+  return user?.role || null;
+}

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const registerRoleOptions = ["STUDENT", "MENTOR"] as const;
+const registerRoleOptions = ["STUDENT", "TUTOR", "MENTOR", "ADMIN"] as const;
 
 export const loginSchema = z.object({
   email: z.string().email("Invalid email address"),

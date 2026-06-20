@@ -14,25 +14,50 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     signIn: "/login",
     error: "/error",
   },
+  trustHost: true,
   providers: [
-    Google({
-      clientId: process.env.AUTH_GOOGLE_ID!,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET!,
-    }),
+    ...(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET
+      ? [
+          Google({
+            clientId: process.env.AUTH_GOOGLE_ID,
+            clientSecret: process.env.AUTH_GOOGLE_SECRET,
+          }),
+        ]
+      : []),
     Credentials({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
       async authorize(credentials) {
-        const parsed = loginSchema.safeParse(credentials);
-        if (!parsed.success) return null;
+        try {
+          const parsed = loginSchema.safeParse(credentials);
+          if (!parsed.success) {
+            console.error("Login validation failed:", parsed.error);
+            return null;
+          }
 
-        const user = await db.user.findUnique({
-          where: { email: parsed.data.email },
-        });
-        if (!user || !user.password) return null;
+          const user = await db.user.findUnique({
+            where: { email: parsed.data.email },
+          });
+          
+          if (!user || !user.password) {
+            console.error("User not found or no password set");
+            return null;
+          }
 
-        const match = await bcrypt.compare(parsed.data.password, user.password);
-        if (!match) return null;
+          const match = await bcrypt.compare(parsed.data.password, user.password);
+          if (!match) {
+            console.error("Password mismatch");
+            return null;
+          }
 
-        return user;
+          return user;
+        } catch (error) {
+          console.error("Auth error:", error);
+          return null;
+        }
       },
     }),
   ],
