@@ -30,9 +30,12 @@ export function LoginForm() {
   } = useForm<LoginInput>({ resolver: zodResolver(loginSchema) });
 
   async function onSubmit(data: LoginInput) {
+    const safeCallbackUrl = callbackUrl && !callbackUrl.includes("/login") ? callbackUrl : undefined;
+
     const result = await signIn("credentials", {
       email: data.email,
       password: data.password,
+      callbackUrl: safeCallbackUrl ?? "/dashboard",
       redirect: false,
     });
 
@@ -41,19 +44,16 @@ export function LoginForm() {
       return;
     }
 
-    // Get user role and redirect accordingly
-    if (callbackUrl && !callbackUrl.includes("/login")) {
-      router.push(callbackUrl);
-    } else {
-      const userRole = await getUserRole(data.email);
-      const redirectUrl = getDashboardUrl(userRole);
-      router.push(redirectUrl);
-    }
+    const userRole = await getUserRole(data.email);
+    const fallbackRedirect = getDashboardUrl(userRole);
+    const destination = result?.url ?? safeCallbackUrl ?? fallbackRedirect;
+
+    router.replace(destination);
     router.refresh();
   }
 
   async function handleGoogle() {
-    await signIn("google", { callbackUrl });
+    await signIn("google", { callbackUrl: callbackUrl ?? undefined });
   }
 
   return (

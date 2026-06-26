@@ -8,11 +8,11 @@ export function getDashboardUrl(role?: Role | null): string {
 
   switch (role) {
     case "ADMIN":
-      return "/admin/dashboard";
+      return "/dashboard/admin";
     case "MENTOR":
-      return "/mentor/sessions";
+      return "/profile/edit?tab=mentor";
     case "TUTOR":
-      return "/my-courses";
+      return "/profile/edit?tab=tutor";
     case "STUDENT":
       return "/dashboard";
     default:
@@ -30,9 +30,9 @@ export function getProfileUrl(role?: Role | null): string {
     case "ADMIN":
       return "/profile";
     case "MENTOR":
-      return "/profile/edit";
+      return "/profile/edit?tab=mentor";
     case "TUTOR":
-      return "/profile/edit";
+      return "/profile/edit?tab=tutor";
     case "STUDENT":
       return "/profile";
     default:

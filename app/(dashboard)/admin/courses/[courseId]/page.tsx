@@ -160,7 +160,12 @@ export default async function AdminCourseEditPage({ params }: Props) {
 
             <div className="space-y-2">
               <Label htmlFor="tags">Tags <span className="text-muted-foreground text-xs">(comma-separated)</span></Label>
-              <Input id="tags" name="tags" defaultValue={course.tags.join(", ")} placeholder="algebra, equations..." />
+              <Input
+                id="tags"
+                name="tags"
+                defaultValue={Array.isArray(course.tags) ? course.tags.join(", ") : ""}
+                placeholder="algebra, equations..."
+              />
             </div>
 
             <div className="flex gap-6">

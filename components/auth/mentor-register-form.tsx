@@ -20,6 +20,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { registerSchema, type RegisterInput } from "@/lib/validations/auth";
 import { registerUser } from "@/app/actions/auth";
+import { getDashboardUrl } from "@/lib/redirect-utils";
 
 const SUBJECTS = [
   { value: "MATH", label: "Mathematics" },
@@ -69,7 +70,7 @@ export function MentorRegisterForm() {
       title: "Account created!",
       description: "Welcome! Complete your mentor profile to start offering sessions.",
     });
-    router.push("/profile/edit");
+    router.push(getDashboardUrl("MENTOR"));
     router.refresh();
   }
 

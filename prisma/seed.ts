@@ -1,12 +1,8 @@
 import { config } from "dotenv";
 config({ path: ".env.local" });
 config({ path: ".env" }); // fallback
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "./generated/prisma/client";
 import bcrypt from "bcryptjs";
-
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
-const db = new PrismaClient({ adapter });
+import { db } from "../lib/db";
 
 async function main() {
   console.log("🌱 Seeding database...");
@@ -15,7 +11,9 @@ async function main() {
   const adminPassword = await bcrypt.hash("Admin@1234", 12);
   const admin = await db.user.upsert({
     where: { email: "admin@pasacademy.com" },
-    update: {},
+    update: {
+      password: adminPassword,
+    },
     create: {
       name: "PAS Academy",
       email: "admin@pasacademy.com",
@@ -25,6 +23,97 @@ async function main() {
     },
   });
   console.log(`✅ Admin user: ${admin.email}`);
+
+  const studentPassword = await bcrypt.hash("Student@1234", 12);
+  const student = await db.user.upsert({
+    where: { email: "student@pasacademy.com" },
+    update: {
+      password: studentPassword,
+    },
+    create: {
+      name: "Amina Student",
+      email: "student@pasacademy.com",
+      password: studentPassword,
+      role: "STUDENT",
+      emailVerified: new Date(),
+    },
+  });
+  await db.profile.upsert({
+    where: { userId: student.id },
+    update: {},
+    create: {
+      userId: student.id,
+      bio: "Demo student exploring tutorials, mentorship, and webinars.",
+      school: "PAS Academy Demo School",
+      gradeLevel: "Grade 12",
+      interests: ["Math", "Science", "Media"],
+    },
+  });
+  console.log(`✅ Student user: ${student.email}`);
+
+  const tutorPassword = await bcrypt.hash("Tutor@1234", 12);
+  const tutor = await db.user.upsert({
+    where: { email: "tutor@pasacademy.com" },
+    update: {
+      password: tutorPassword,
+    },
+    create: {
+      name: "Kwame Tutor",
+      email: "tutor@pasacademy.com",
+      password: tutorPassword,
+      role: "TUTOR",
+      emailVerified: new Date(),
+    },
+  });
+  await db.tutorProfile.upsert({
+    where: { userId: tutor.id },
+    update: {},
+    create: {
+      userId: tutor.id,
+      headline: "Experienced tutor helping students master core subjects",
+      bio: "I teach mathematics, science, and study skills in a practical and engaging way.",
+      expertise: ["Teaching", "Curriculum Design", "Student Support"],
+      subjects: ["MATH", "SCIENCE", "ENGLISH"],
+      yearsExperience: 6,
+      qualifications: ["B.Ed", "Google Educator"],
+      languages: ["English", "Twi"],
+      isApproved: true,
+      isActive: true,
+    },
+  });
+  console.log(`✅ Tutor user: ${tutor.email}`);
+
+  const mentorPassword = await bcrypt.hash("Mentor@1234", 12);
+  const mentor = await db.user.upsert({
+    where: { email: "mentor@pasacademy.com" },
+    update: {
+      password: mentorPassword,
+    },
+    create: {
+      name: "Nana Mentor",
+      email: "mentor@pasacademy.com",
+      password: mentorPassword,
+      role: "MENTOR",
+      emailVerified: new Date(),
+    },
+  });
+  await db.mentorProfile.upsert({
+    where: { userId: mentor.id },
+    update: {},
+    create: {
+      userId: mentor.id,
+      headline: "Mentor for academic, media, and career guidance",
+      expertise: ["Mentorship", "Career Guidance", "Media Strategy"],
+      subjects: ["MEDIA", "OTHER"],
+      yearsExperience: 8,
+      hourlyRate: 25,
+      timezone: "UTC",
+      languages: ["English", "French"],
+      isApproved: true,
+      isAvailable: true,
+    },
+  });
+  console.log(`✅ Mentor user: ${mentor.email}`);
 
   // ── Courses ───────────────────────────────────────────────────────────────
   const coursesData = [

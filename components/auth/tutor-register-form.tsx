@@ -20,6 +20,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { registerSchema, type RegisterInput } from "@/lib/validations/auth";
 import { registerUser } from "@/app/actions/auth";
+import { getDashboardUrl } from "@/lib/redirect-utils";
 
 const SUBJECTS = [
   { value: "MATH", label: "Mathematics" },
@@ -67,9 +68,9 @@ export function TutorRegisterForm() {
 
     toast({
       title: "Account created!",
-      description: "Welcome! Complete your profile to start teaching.",
+      description: "Welcome! Complete your tutor profile to start teaching.",
     });
-    router.push("/profile/edit");
+    router.push(getDashboardUrl("TUTOR"));
     router.refresh();
   }
 

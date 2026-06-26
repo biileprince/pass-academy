@@ -94,12 +94,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -145,13 +145,13 @@ model PasswordResetToken {
 model Profile {
   id          String   @id @default(cuid())
   userId      String   @unique
-  bio         String?  @db.Text
+  bio         String?
   avatarUrl   String?
   phone       String?
   country     String?
   school      String?
   gradeLevel  String?
-  interests   String[]
+  interests   Json?
   socialLinks Json?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -165,15 +165,15 @@ model MentorProfile {
   id              String         @id @default(cuid())
   userId          String         @unique
   headline        String
-  expertise       String[]
-  subjects        CourseCategory[]
+  expertise       Json?
+  subjects        Json?
   yearsExperience Int            @default(0)
-  hourlyRate      Decimal?       @db.Decimal(10, 2)
+  hourlyRate      Float?
   currency        String         @default("USD")
   timezone        String         @default("UTC")
   isApproved      Boolean        @default(false)
   isAvailable     Boolean        @default(true)
-  languages       String[]       @default(["English"])
+  languages       Json?          @default("[\"English\"]")
   rating          Float?
   reviewCount     Int            @default(0)
   availability    Json?
@@ -190,14 +190,14 @@ model TutorProfile {
   id              String         @id @default(cuid())
   userId          String         @unique
   headline        String
-  bio             String?        @db.Text
-  expertise       String[]
-  subjects        CourseCategory[]
+  bio             String?
+  expertise       Json?
+  subjects        Json?
   yearsExperience Int            @default(0)
-  qualifications  String[]
+  qualifications  Json?
   isApproved      Boolean        @default(false)
   isActive        Boolean        @default(true)
-  languages       String[]       @default(["English"])
+  languages       Json?          @default("[\"English\"]")
   rating          Float?
   reviewCount     Int            @default(0)
   studentsCount   Int            @default(0)
@@ -218,14 +218,14 @@ model MentorSession {
   mentorId        String
   mentorProfileId String
   title           String
-  description     String?       @db.Text
+  description     String?
   scheduledAt     DateTime
   durationMinutes Int           @default(60)
   status          SessionStatus @default(PENDING)
   meetingUrl      String?
-  notes           String?       @db.Text
+  notes           String?
   studentRating   Int?
-  studentReview   String?       @db.Text
+  studentReview   String?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 
@@ -243,25 +243,25 @@ model MentorSession {
 // ─── Courses & Learning Hub ───────────────────────────────────────────────────
 
 model Course {
-  id           String         @id @default(cuid())
-  title        String
-  slug         String         @unique
-  description  String         @db.Text
-  shortDesc    String?
-  thumbnailUrl String?
-  category     CourseCategory
-  level        CourseLevel    @default(BEGINNER)
-  tags         String[]
-  isPublished  Boolean        @default(false)
-  isFeatured   Boolean        @default(false)
-  isFree       Boolean        @default(true)
-  price        Decimal?       @db.Decimal(10, 2)
-  currency     String         @default("USD")
-  authorId     String
-  tutorId      String
-  totalDuration Int           @default(0)
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  id            String         @id @default(cuid())
+  title         String
+  slug          String         @unique
+  description   String
+  shortDesc     String?
+  thumbnailUrl  String?
+  category      CourseCategory
+  level         CourseLevel    @default(BEGINNER)
+  tags          Json?
+  isPublished   Boolean        @default(false)
+  isFeatured    Boolean        @default(false)
+  isFree        Boolean        @default(true)
+  price         Float?
+  currency      String         @default("USD")
+  authorId      String
+  tutorId       String
+  totalDuration Int            @default(0)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
   tutor       User         @relation("TutorCourses", fields: [tutorId], references: [id])
   lessons     Lesson[]
@@ -278,14 +278,14 @@ model Lesson {
   courseId    String
   title       String
   slug        String
-  description String?  @db.Text
+  description String?
   videoUrl    String?
   duration    Int      @default(0)
   order       Int
   isPublished Boolean  @default(false)
   isFree      Boolean  @default(false)
   downloadUrl String?
-  content     String?  @db.Text
+  content     String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -340,7 +340,7 @@ model Webinar {
   id           String        @id @default(cuid())
   title        String
   slug         String        @unique
-  description  String        @db.Text
+  description  String
   thumbnailUrl String?
   hostId       String
   hostName     String
@@ -352,7 +352,7 @@ model Webinar {
   maxAttendees Int?
   isPublic     Boolean       @default(true)
   isFree       Boolean       @default(true)
-  tags         String[]
+  tags         Json?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 
@@ -385,7 +385,7 @@ model Message {
   senderId   String
   receiverId String
   sessionId  String?
-  content    String    @db.Text
+  content    String
   isRead     Boolean   @default(false)
   readAt     DateTime?
   createdAt  DateTime  @default(now())
@@ -408,7 +408,7 @@ model CareerProfile {
   resumeUrl      String?
   linkedinUrl    String?
   targetRole     String?
-  skills         String[]
+  skills         Json?
   workExperience Json?
   education      Json?
   isVisible      Boolean  @default(false)

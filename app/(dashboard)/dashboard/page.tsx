@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { getAdminStats } from "@/app/actions/admin";
 import { getMyEnrollments } from "@/app/actions/courses";
 import { getMySessionsAsStudent } from "@/app/actions/mentorship";
+import { getProfile } from "@/app/actions/profile";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Calendar, Users, Video } from "lucide-react";
 import Link from "next/link";
@@ -18,6 +19,7 @@ export default async function DashboardPage() {
 
   if (role === "ADMIN") return <AdminDashboard />;
   if (role === "MENTOR") return <MentorDashboard />;
+  if (role === "TUTOR") return <TutorDashboard />;
   return <StudentDashboard />;
 }
 
@@ -36,7 +38,7 @@ async function StudentDashboard() {
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold">Welcome back!</h1>
-        <p className="text-muted-foreground">Here&apos;s your learning overview.</p>
+        <p className="text-muted-foreground">Here&apos;s your learning overview and the next actions for your PAS Academy journey.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -64,12 +66,17 @@ async function StudentDashboard() {
             <BookOpen className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">
-              {enrollments.filter((e) => e.status === "COMPLETED").length}
-            </p>
+            <p className="text-2xl font-bold">{enrollments.filter((e) => e.status === "COMPLETED").length}</p>
           </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardContent className="p-4">
+          <p className="font-medium">What you can do next</p>
+          <p className="text-sm text-muted-foreground mt-1">Explore tutorials, book mentorship, and join webinars to keep growing.</p>
+        </CardContent>
+      </Card>
 
       {sessions.length > 0 && (
         <div>
@@ -82,9 +89,7 @@ async function StudentDashboard() {
                     <p className="font-medium text-sm">{s.title}</p>
                     <p className="text-xs text-muted-foreground">{formatDateTime(s.scheduledAt)}</p>
                   </div>
-                  <Badge variant={s.status === "CONFIRMED" ? "default" : "secondary"}>
-                    {s.status}
-                  </Badge>
+                  <Badge variant={s.status === "CONFIRMED" ? "default" : "secondary"}>{s.status}</Badge>
                 </CardContent>
               </Card>
             ))}
@@ -101,20 +106,68 @@ async function StudentDashboard() {
   );
 }
 
+async function TutorDashboard() {
+  const profile = await getProfile();
+  const profileReady = Boolean(profile?.tutorProfile?.headline && profile?.tutorProfile?.expertise?.length);
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-2xl font-bold">Tutor Dashboard</h1>
+        <p className="text-muted-foreground">Create learning experiences, manage students, and grow your teaching presence.</p>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Profile status</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">{profileReady ? "Ready" : "Needs setup"}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Course creation</CardTitle>
+            <BookOpen className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">Start</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Student support</CardTitle>
+            <Calendar className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">Live</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="flex flex-wrap gap-3">
+        <Button asChild><Link href="/tutor/courses/create">Create your first course</Link></Button>
+        <Button variant="outline" asChild><Link href="/tutor/courses">Manage courses</Link></Button>
+        <Button variant="outline" asChild><Link href="/profile/edit?tab=tutor">Complete tutor profile</Link></Button>
+      </div>
+    </div>
+  );
+}
+
 async function MentorDashboard() {
   const { getMySessionsAsMentor } = await import("@/app/actions/mentorship");
   const sessionsResult = await getMySessionsAsMentor();
   const sessions = sessionsResult.success ? sessionsResult.data : [];
   const pending = sessions.filter((s) => s.status === "PENDING").length;
-  const upcoming = sessions.filter(
-    (s) => s.status === "CONFIRMED" && new Date(s.scheduledAt) >= new Date()
-  ).length;
+  const upcoming = sessions.filter((s) => s.status === "CONFIRMED" && new Date(s.scheduledAt) >= new Date()).length;
 
   return (
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold">Mentor Dashboard</h1>
-        <p className="text-muted-foreground">Manage your sessions and availability.</p>
+        <p className="text-muted-foreground">Manage your sessions, availability, and the students you support.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -144,6 +197,7 @@ async function MentorDashboard() {
       <div className="flex gap-3">
         <Button asChild><Link href="/mentor/sessions">Manage sessions</Link></Button>
         <Button variant="outline" asChild><Link href="/mentor/availability">Edit availability</Link></Button>
+        <Button variant="outline" asChild><Link href="/profile/edit?tab=mentor">Complete mentor profile</Link></Button>
       </div>
     </div>
   );

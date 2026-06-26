@@ -42,14 +42,16 @@ export default async function AdminMentorsPage() {
                       <p className="font-semibold">{user.name}</p>
                       <p className="text-sm text-muted-foreground">{mp.headline}</p>
                       <div className="flex flex-wrap gap-1 mt-1">
-                        {mp.subjects.slice(0, 3).map((s) => {
-                          const label = COURSE_CATEGORIES.find((c) => c.value === s)?.label ?? s;
-                          return (
-                            <span key={s} className="text-xs bg-muted rounded-full px-2 py-0.5">
-                              {label}
-                            </span>
-                          );
-                        })}
+                        {(Array.isArray(mp.subjects) ? mp.subjects : [])
+                          .slice(0, 3)
+                          .map((s) => {
+                            const label = COURSE_CATEGORIES.find((c) => c.value === s)?.label ?? s;
+                            return (
+                              <span key={s} className="text-xs bg-muted rounded-full px-2 py-0.5">
+                                {label}
+                              </span>
+                            );
+                          })}
                       </div>
                     </div>
                   </div>
